@@ -1,5 +1,5 @@
 <?php
-	date_default_timezone_set('Australia/Sydney');
+//	date_default_timezone_set('Australia/Sydney');
 	class Visitor_stats{
 	
 		var $settings = array();
@@ -44,8 +44,6 @@
 		function save_visit_data($SESS){
 			global $IN, $FNS, $DB, $LOC, $PREFS;
 			
-			
-			
 			$page_lock_time = 15;	//in minutes
 
 			//$LOC->zones[$PREFS->core_ini['server_timezone']];
@@ -65,7 +63,7 @@
 	        	return;
 
 			//Check if he is visited that page within fifteen minutes	        
-	        $accessed_time = date("Y-m-d H:i:s", ( time() - $page_lock_time*60));
+	        $accessed_time = date("Y-m-d H:i:s", ($LOC->now - $page_lock_time*60));
 
 			$sql = "SELECT title, url, entry_date FROM exp_visitstats WHERE url='".$current_page."' AND user_agent='".$SESS->sdata['user_agent']."' AND member_id='".$SESS->sdata['member_id']."' AND ip='".$SESS->sdata['ip_address']."' AND entry_date>'$accessed_time'";
 	        $exist_query = $DB->query($sql);
@@ -74,9 +72,9 @@
 	        if($exist_query->num_rows==1)
 	        	return;
 			
-			$entry_datetime = date("Y-m-d H:i:s", time() );
-      		$visit_date = date("Y-m-d", time() );
-			$visit_time = date("H:i:s", time() );
+			$entry_datetime = date("Y-m-d H:i:s",$LOC->now );
+      		$visit_date = date("Y-m-d",$LOC->now );
+			$visit_time = date("H:i:s",$LOC->now );
 
 			//Get the time slot
 			$sql = "SELECT timeslot_id, time_start, time_end FROM exp_visitstats_timeslot WHERE '$visit_time'>time_start AND '$visit_time'<=time_end ";
